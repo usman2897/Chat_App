@@ -6,6 +6,7 @@ public class Message {
 	String ID;
 	String message;
 	String DestinationID;
+	Type type;
 
 	public Message()
 	{
@@ -42,6 +43,10 @@ public class Message {
 	public String getDestination()
 	{
 		return this.DestinationID;
+	}
+	public void setType(Type message_type)
+	{
+		this.type = message_type;
 	}
 	public String toString()
 	{
