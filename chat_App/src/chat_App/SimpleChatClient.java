@@ -14,13 +14,17 @@ public class SimpleChatClient
     PrintWriter writer;
     Socket sock;
     Message clientMessage;
-    
-    public SimpleChatClient(String id) {
+    String IpAdress;
+    int portNumber;
+
+    public SimpleChatClient(String id, String ip, int port) {
     	clientMessage = new Message(id);
+    	this.IpAdress = ip;
+    	this.portNumber = port;
     }
-    
-    public void go() {
-        JFrame frame = new JFrame("Ludicrously Simple Chat Client");
+
+    public void go(String User) {
+        JFrame frame = new JFrame(User);
         JPanel mainPanel = new JPanel();
         incoming = new JTextArea(15, 50);
         incoming.setLineWrap(true);
@@ -37,18 +41,17 @@ public class SimpleChatClient
         mainPanel.add(sendButton);
         frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
         setUpNetworking();
-        
+        //Thread to process the incoming data
         Thread readerThread = new Thread(new IncomingReader());
         readerThread.start();
-        
         frame.setSize(650, 500);
         frame.setVisible(true);
-        
+
     }
-    
+
     private void setUpNetworking() {
         try {
-            sock = new Socket("127.0.0.1", 5000);
+            sock = new Socket(this.IpAdress, this.portNumber);
             InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
             reader = new BufferedReader(streamReader);
             writer = new PrintWriter(sock.getOutputStream());
@@ -59,15 +62,15 @@ public class SimpleChatClient
             ex.printStackTrace();
         }
     }
-    
+
     public class SendButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ev) {
             try {
             	clientMessage.setMessage(outgoing.getText());
-            	
+
                 writer.println(clientMessage.toString());
                 writer.flush();
-                
+
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -76,19 +79,19 @@ public class SimpleChatClient
             outgoing.requestFocus();
         }
     }
-    
+
     public static void main(String[] args) {
-        new SimpleChatClient(args[0]).go();
+        new SimpleChatClient(args[0], args[1], Integer.parseInt(args[2])).go(args[0]);
     }
-    
+
     class IncomingReader implements Runnable {
         public void run() {
             String message;
             try {
                 while ((message = reader.readLine()) != null) {
                     System.out.println("client read " + message);
-                    
-                    incoming.append(Message.toObject(message).ID +": " + Message.toObject(message).message + "\n");
+                    Message recievedMessage = Message.toObject(message);
+                    incoming.append(recievedMessage.fullMessage() + "\n");
                 }
             } catch (IOException ex)
             {
