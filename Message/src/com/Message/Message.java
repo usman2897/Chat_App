@@ -1,4 +1,5 @@
-package chat_App;
+package com.Message;
+
 
 import com.google.gson.Gson;
 
@@ -47,6 +48,10 @@ public class Message {
 	public void setType(Type message_type)
 	{
 		this.type = message_type;
+	}
+	public Type getType()
+	{
+		return this.type;
 	}
 	public String toString()
 	{
