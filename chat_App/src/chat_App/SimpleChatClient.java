@@ -14,7 +14,7 @@ import java.awt.event.*;
 
 public class SimpleChatClient
 {
-    JTextArea incoming;
+	JTextArea incoming;
     JTextField outgoing;
     JList online_clients;
     JLabel online_clients_label;
@@ -34,6 +34,7 @@ public class SimpleChatClient
 
     public void go(String User) {
         JFrame frame = new JFrame(User);
+        frame.addWindowListener(new Closing());
         JPanel mainPanel = new JPanel();
         online_clients_label = new JLabel("Online: ");
         listbuilder = new DefaultListModel();
@@ -92,6 +93,55 @@ public class SimpleChatClient
         {
             ex.printStackTrace();
         }
+    }
+
+    public class Closing implements WindowListener {
+
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			clientMessage.setDestination(null);
+			clientMessage.setType(Type.END);
+			writer.println(clientMessage.toString());
+            writer.flush();
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
     }
 
     public class SendButtonListener implements ActionListener {
@@ -160,8 +210,8 @@ public class SimpleChatClient
 		{
 			if(request.getValueIsAdjusting() == true)
 				clientMessage.setDestination(listbuilder.get(request.getFirstIndex()).toString());
-			else if(request.getValueIsAdjusting() == false)
-				clientMessage.setDestination(null);
+			//else if(request.getValueIsAdjusting() == false)
+				//clientMessage.setDestination(null);
 		}
 
     }
